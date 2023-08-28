@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback } from "react";
 import {
   IJsonModel,
   IJsonRowNode,
@@ -10,8 +10,6 @@ import {
 import * as FlexLayout from "flexlayout-react";
 import PluginViewer from "../../components/PluginViewer";
 import { IPluginUIModel } from "../../models/plugin";
-import { useDynamic } from "../../context/dynamicProviders";
-import Leaflet from "../../components/Leaflet";
 
 interface ILayoutProps {}
 
@@ -81,21 +79,16 @@ const ShowLayout: FC<ILayoutProps> = () => {
   const factory = useCallback((node: TabNode): any => {
     const config = node.getConfig() as IPluginUIModel;
 
-    if(config.libraryName === "leafletMapPlugin") {
-    
-    return <Leaflet />;
-    }
-
     return <PluginViewer {...config} />;
   }, []);
   return (
     <FlexLayout.Layout
-      classNameMapper={(className: string) => {
-        if (className === "flexlayout__layout") {
-          return "flexlayout__layout flexlayout__layout--show";
-        }
-        return className;
-      }}
+      // classNameMapper={(className: string) => {
+      //   if (className === "flexlayout__layout") {
+      //     return "flexlayout__layout flexlayout__layout--show";
+      //   }
+      //   return className;
+      // }}
       model={Model.fromJson(model)}
       factory={factory}
       onAction={(e) => {

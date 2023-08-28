@@ -1,5 +1,4 @@
-import { createContext, useState, useContext, useRef, useEffect } from "react";
-import { IPluginUIModel, PluginStatus } from "../models/plugin";
+import { createContext, useState, useContext } from "react";
 import React from "react";
 export interface PluginContextType {
   pluginUploading: boolean;

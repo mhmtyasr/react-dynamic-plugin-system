@@ -6,30 +6,32 @@ import {
   Action,
   Model,
 } from "flexlayout-react";
-import { Row, Col, Tree, Button } from "antd";
-import React, { FC, useCallback, useRef, useState } from "react";
+import { Row, Col, Tree, Button, TourProps, Tour, notification } from "antd";
+import  { FC, useCallback, useEffect, useRef, useState } from "react";
 import { IPluginUIModel } from "../../models/plugin";
+import {  useNavigate } from "react-router-dom";
 
+//Default Plugins from github
 const plugins: IPluginUIModel[] = [
   {
     id: 1,
-    name: "testPluginWithouthProvider",
+    name: "testPluginWithoutProvider",
     description: "testPluginWithouthProvider",
-    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-package/main/WithoutProvider/build/testPluginWithouthProvider%400.1.0.js",
+    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-packages/main/WithoutProvider/build/testPluginWithouthProvider%400.1.0.js",
     libraryName: "testPluginWithouthProvider",
   },
   {
     id: 4,
     name: "testPluginWithProvider",
     description: "testPluginWithProvider",
-    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-package/main/WithProvider/build/testPluginWithProvider%400.1.1.js",
+    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-packages/main/WithProvider/build/testPluginWithProvider%400.1.1.js",
     libraryName: "testPluginWithProvider",
   },
   {
     id: 5,
     name: "Leaflet",
     description: "leafletMapPlugin",
-    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-package/main/Cesium/build/leafletMapPlugin%400.1.1.js",
+    url: "https://raw.githubusercontent.com/mhmtyasr/react-plugin-packages/main/LeafletMap/build/leafletMapPlugin%400.1.1.js",
     libraryName: "leafletMapPlugin",
   },
 ];
@@ -39,6 +41,7 @@ const getModel = () => {
     localStorage.getItem("layout") as string
   ) as IJsonModel | null;
 
+  //Default LAyout
   if (layout === null) {
     return {
       global: {
@@ -49,7 +52,7 @@ const getModel = () => {
         tabSetEnableMaximize: false,
       },
       layout: {
-        id: "#edd84c97-a41a-433c-8f26-1007dbdccc15",
+        id: "#",
         type: "row",
         children: [],
       },
@@ -90,6 +93,35 @@ const DesignLayout: FC = () => {
   }, []);
 
   const layoutRef = useRef<Layout>(null);
+  const treeRef = useRef<any>(null);
+
+  const saveButtonRef = useRef<any>(null);
+
+  const gotoButtonRef = useRef<any>(null);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const steps: TourProps["steps"] = [
+    {
+      title: "Drag and Drop",
+      description: "Drag and drop plugins from left to right",
+      target: () => treeRef.current,
+    },
+    {
+      title: "Save",
+      description: "Save",
+      target: () => saveButtonRef.current,
+    },
+    {
+      title: "Go to",
+      description: "Go to",
+      target: () => gotoButtonRef.current,
+    },
+  ];
+
+  useEffect(() => {
+    setOpen(true);
+  }, []);
 
   const onAddPluginLayout = useCallback(
     (e: number) => {
@@ -121,6 +153,9 @@ const DesignLayout: FC = () => {
 
   const onSave = () => {
     localStorage.setItem("layout", JSON.stringify(layoutJson));
+    notification.success({
+      message: "Layout Saved",
+    });
   };
 
   return (
@@ -129,7 +164,7 @@ const DesignLayout: FC = () => {
         gutter={[8, 0]}
         style={{ height: "calc(100% - 52px)", marginTop: 8 }}
       >
-        <Col span={4}>
+        <Col span={4} ref={treeRef}>
           <Tree
             style={{ marginTop: 20 }}
             multiple
@@ -159,21 +194,40 @@ const DesignLayout: FC = () => {
         <Col span={20}>
           <Row gutter={[16, 0]}>
             <Col
-              xs={{ offset: 22, span: 2 }}
+              xs={{ offset: 20, span: 2 }}
               className="layoutButtonsContainer"
             >
-              <Button type={"primary"} size="middle" onClick={onSave} block>
+              <Button
+                type={"primary"}
+                size="middle"
+                onClick={onSave}
+                block
+                ref={saveButtonRef}
+              >
                 Save
+              </Button>
+            </Col>
+            <Col xs={{ offset: 0, span: 2 }} className="layoutButtonsContainer">
+              <Button
+                type={"primary"}
+                size="middle"
+                block
+                ref={gotoButtonRef}
+                onClick={() => {
+                  window.location.href = "/show";
+                }}
+              >
+                Go to
               </Button>
             </Col>
           </Row>
           <Layout
-            ref={layoutRef}
             model={Model.fromJson(layoutJson)}
             factory={factory}
             onModelChange={(e: Model) => {
               setLayoutJson(e.toJson());
             }}
+            ref={layoutRef}
             onAction={(action: Action) => {
               if (action.type === Actions.DELETE_TAB) {
                 setSelectedKeys([
@@ -187,6 +241,12 @@ const DesignLayout: FC = () => {
           />
         </Col>
       </Row>
+      <Tour
+        scrollIntoViewOptions={{ behavior: "smooth", block: "center" }}
+        open={open}
+        onClose={() => setOpen(false)}
+        steps={steps}
+      />
     </div>
   );
 };

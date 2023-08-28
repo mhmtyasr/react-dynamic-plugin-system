@@ -18,6 +18,7 @@ declare global {
   }
 }
 
+//
 window.Antd = Antd;
 window.React = React;
 root.render(

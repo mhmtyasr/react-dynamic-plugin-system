@@ -6,26 +6,21 @@ import Header from "./components/Header";
 import { DynamicProvider } from "./context/dynamicProviders";
 import 'leaflet/dist/leaflet.css';
 
-declare global {
-  interface Window {
-    CESIUM_BASE_URL: string;
-  }
-}
+
 function App() {
-  window.CESIUM_BASE_URL = 'http://localhost:3000/';
   return (
     <>
       <Header />
       <Routes>
         <Route
-          path="/"
+          path="/show"
           element={
             <DynamicProvider>
               <ShowLayout />
             </DynamicProvider>
           }
         ></Route>
-        <Route path="/design" element={<DesignLayout />}></Route>
+        <Route path="/" element={<DesignLayout />}></Route>
       </Routes>
     </>
   );

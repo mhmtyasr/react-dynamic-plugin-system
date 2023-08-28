@@ -22,20 +22,25 @@ function DynamicProvider({ children }: { children: React.ReactNode }) {
   const contexts = useRef<React.Context<any>[]>([]);
   const providers = useRef<any[]>([]);
 
-  let model = JSON.parse(
+  let layoutModel = JSON.parse(
     localStorage.getItem("layout") as string
   ) as IJsonModel | null;
 
+
+  //Uploading all plugins from layout
   const getAllPlugins =  async () => {
-    const plugins = getPluginsFromLayout(model!);
+    const plugins = getPluginsFromLayout(layoutModel!);
     plugins.forEach(async (plugin, index) => {
       await axios.get(plugin.url).then((res) => {
         const func = new Function(res.data) as any;
 
+        //set plugin to window
         func();
 
         const attributes = //@ts-ignore
           (window[plugin.libraryName] as any).getAttributes() as any;
+
+          console.log(plugin.libraryName)
 
         if (typeof attributes.service !== "undefined") {
           if (typeof attributes.service.provider !== "undefined") {

@@ -1,9 +1,5 @@
 import {
-  IJsonBorderNode,
   IJsonModel,
-  IJsonRowNode,
-  IJsonTabNode,
-  IJsonTabSetNode,
 } from "flexlayout-react";
 import { IPluginUIModel } from "../models/plugin";
 

@@ -6,8 +6,3 @@ export interface IPluginUIModel {
     libraryName: string;
 }
 
-export enum PluginStatus {
-    Ok = "Ok",
-    Waiting = "Waiting",
-    Error = "Error",
-  }
